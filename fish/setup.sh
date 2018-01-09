@@ -45,9 +45,24 @@ function set_fish_shell() {
     fi
 }
 
+function install_tacklebox() {
+    substep_info "Installing Tacklebox and Tackle using Tacklebox's install script"
+    if curl -L https://raw.githubusercontent.com/justinmayer/tacklebox/master/tools/install.fish | fish; then
+        substep_success "Tacklebox installed"
+    else
+        substep_error "Failed to install Tacklebox"
+        return 1
+    fi
+}
+
 if set_fish_shell; then
     success "Successfully set up fish shell."
 else
     error "Failed setting up fish shell."
 fi
 
+if install_tacklebox; then
+    success "Successfully installed Tacklebox."
+else
+    error "Tacklebox installation failed."
+fi
