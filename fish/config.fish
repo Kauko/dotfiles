@@ -26,7 +26,8 @@ set tacklebox_modules virtualfish virtualhooks
 source ~/.tacklebox/tacklebox.fish
 
 # thefuck
-eval (thefuck --alias | tr '\n' ';')
+# eval (thefuck --alias | tr '\n' ';')
+thefuck --alias | source 
 
 # iTerm2 Shell Integration
 test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish
