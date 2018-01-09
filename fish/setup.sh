@@ -73,14 +73,14 @@ else
     error "Failed setting up fish shell."
 fi
 
-if install_tacklebox; then
-    success "Successfully installed Tacklebox."
-else
-    error "Tacklebox installation failed."
-fi
+#if install_tacklebox; then
+#    success "Successfully installed Tacklebox."
+#else
+#    error "Tacklebox installation failed."
+#fi
 
-if install_omf; then
-    success "Successfully installed OMF."
-else
-    error "OMF installation failed."
-fi
+#if install_omf; then
+#    success "Successfully installed OMF."
+#else
+#    error "OMF installation failed."
+#fi
