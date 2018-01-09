@@ -18,3 +18,15 @@ set -x -g PATH ~/.composer/vendor/bin $PATH
 
 # Source conda.fish
 source (conda info --root)/etc/fish/conf.d/conda.fish
+
+## Teemun lisäämät
+# Tacklebox
+set tacklebox_path ~/.tackle
+set tacklebox_modules virtualfish virtualhooks
+source ~/.tacklebox/tacklebox.fish
+
+# thefuck
+eval (thefuck --alias | tr '\n' ';')
+
+# iTerm2 Shell Integration
+test -e {$HOME}/.iterm2_shell_integration.fish ; and source {$HOME}/.iterm2_shell_integration.fish

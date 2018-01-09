@@ -1,91 +1,82 @@
-function fish_prompt --description 'Write out the prompt'
-	set -l last_status $status
+set -g pad " "
 
-	# Just calculate this once, to save a few cycles when displaying the prompt
-	if not set -q __fish_prompt_hostname
-		set -g __fish_prompt_hostname (hostname|cut -d . -f 1)
-	end
+## Function to show a segment
+function prompt_segment -d "Function to show a segment"
+  # Get colors
+  set -l bg $argv[1]
+  set -l fg $argv[2]
 
-	set -l normal (set_color normal)
+  # Set 'em
+  set_color -b $bg
+  set_color $fg
 
-	# Hack; fish_config only copies the fish_prompt function (see #736)
-	if not set -q -g __fish_classic_git_functions_defined
-		set -g __fish_classic_git_functions_defined
+  # Print text
+  if [ -n "$argv[3]" ]
+    echo -n -s $argv[3]
+  end
+end
 
-		function __fish_repaint_user --on-variable fish_color_user --description "Event handler, repaint when fish_color_user changes"
-			if status --is-interactive
-				commandline -f repaint ^/dev/null
-			end
-		end
+## Function to show current status
+function show_status -d "Function to show the current status"
+  if [ $RETVAL -ne 0 ]
+    prompt_segment red white " ▲ "
+    set pad ""
+    end
+  if [ -n "$SSH_CLIENT" ]
+      prompt_segment blue white " SSH: "
+      set pad ""
+    end
+end
 
-		function __fish_repaint_host --on-variable fish_color_host --description "Event handler, repaint when fish_color_host changes"
-			if status --is-interactive
-				commandline -f repaint ^/dev/null
-			end
-		end
+function show_virtualenv -d "Show active python virtual environments"
+  if set -q VIRTUAL_ENV
+    set -l venvname (basename "$VIRTUAL_ENV")
+    prompt_segment normal white " ($venvname)"
+  end
+end
 
-		function __fish_repaint_status --on-variable fish_color_status --description "Event handler; repaint when fish_color_status changes"
-			if status --is-interactive
-				commandline -f repaint ^/dev/null
-			end
-		end
+## Show user if not default
+function show_user -d "Show user"
+  if [ "$USER" != "$default_user" -o -n "$SSH_CLIENT" ]
+    set -l host (hostname -s)
+    set -l who (whoami)
+    prompt_segment normal yellow " $who"
 
-		function __fish_repaint_bind_mode --on-variable fish_key_bindings --description "Event handler; repaint when fish_key_bindings changes"
-			if status --is-interactive
-				commandline -f repaint ^/dev/null
-			end
-		end
+    # Skip @ bit if hostname == username
+    if [ "$USER" != "$HOST" ]
+      prompt_segment normal white "@"
+      prompt_segment normal green "$host "
+      set pad ""
+    end
+    end
+end
 
-		# initialize our new variables
-		if not set -q __fish_classic_git_prompt_initialized
-			set -qU fish_color_user; or set -U fish_color_user -o green
-			set -qU fish_color_host; or set -U fish_color_host -o cyan
-			set -qU fish_color_status; or set -U fish_color_status red
-			set -U __fish_classic_git_prompt_initialized
-		end
-	end
+# Show directory
+function show_pwd -d "Show the current directory"
+  set -l pwd (prompt_pwd)
+  prompt_segment normal blue "$pad$pwd "
+end
 
-	set -l color_cwd
-	set -l prefix
-	switch $USER
-	case root toor
-		if set -q fish_color_cwd_root
-			set color_cwd $fish_color_cwd_root
-		else
-			set color_cwd $fish_color_cwd
-		end
-		set suffix '#'
-	case '*'
-		set color_cwd $fish_color_cwd
-		set suffix '>'
-	end
+# Show prompt w/ privilege cue
+function show_prompt -d "Shows prompt with cue for current priv"
+  set -l uid (id -u $USER)
+    if [ $uid -eq 0 ]
+    prompt_segment red white " ! "
+    set_color normal
+    echo -n -s " "
+  else
+    prompt_segment normal white " \$ "
+    end
 
-	set -l prompt_status
-	if test $last_status -ne 0
-		set prompt_status ' ' (set_color $fish_color_status) "[$last_status]" "$normal"
-	end
+  set_color normal
+end
 
-	set -l mode_str
-	switch "$fish_key_bindings"
-	case '*_vi_*' '*_vi'
-		# possibly fish_vi_key_bindings, or custom key bindings
-		# that includes the name "vi"
-		set mode_str (
-			echo -n " "
-			switch $fish_bind_mode
-			case default
-				set_color --bold --background red white
-				echo -n "[N]"
-			case insert
-				set_color --bold green
-				echo -n "[I]"
-			case visual
-				set_color --bold magenta
-				echo -n "[V]"
-			end
-			set_color normal
-		)
-	end
-
-	echo -n -s (set_color $fish_color_user) "$USER" $normal @ (set_color $fish_color_host) "$__fish_prompt_hostname" $normal ' ' (set_color $color_cwd) (prompt_pwd) $normal (__fish_git_prompt) $normal $prompt_status "$mode_str" "> "
+## SHOW PROMPT
+function fish_prompt
+  set -g RETVAL $status
+  show_status
+  show_virtualenv
+  show_user
+  show_pwd
+  show_prompt
 end
