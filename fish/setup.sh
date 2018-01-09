@@ -56,6 +56,18 @@ function install_tacklebox() {
     fi
 }
 
+
+
+function install_omf() {
+    substep_info "Installing Oh-My-Fish!"
+    if curl -L https://get.oh-my.fish | fish; then
+        substep_success "Oh-my-Fish installed"
+    else
+        substep_error "Failed to install Oh-my-fish!"
+        return 1
+    fi
+}
+
 if set_fish_shell; then
     success "Successfully set up fish shell."
 else
@@ -66,4 +78,10 @@ if install_tacklebox; then
     success "Successfully installed Tacklebox."
 else
     error "Tacklebox installation failed."
+fi
+
+if install_omf; then
+    success "Successfully installed OMF."
+else
+    error "OMF installation failed."
 fi
