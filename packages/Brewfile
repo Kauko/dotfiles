@@ -13,6 +13,28 @@ tap 'homebrew/completions'
 tap 'homebrew/versions'
 tap 'buo/cask-upgrade'
 
+### CASKS
+## Mine
+cask "bitbar"
+cask "vagrant"
+
+## From fork
+cask 'dropbox'
+cask 'google-chrome'
+cask 'hammerspoon'
+cask 'intellij-idea'
+cask 'iterm2'
+cask 'anaconda'
+
+cask 'java'
+cask 'karabiner-elements'
+cask 'paintbrush'
+cask 'pgadmin4'
+cask 'postman'
+cask 'slack'
+cask 'spotify'
+cask 'visual-studio-code'
+
 
 ### BREWS
 ## Mine
@@ -48,30 +70,7 @@ brew 'node'
 brew 'openssl'
 brew 'postgresql'
 brew 'ssh-copy-id'
-brew 'swagger-codegen'
 brew 'wget'
-brew 'valgrind'
-
-### CASKS
-## Mine
-cask "bitbar"
-cask "vagrant"
-
-## From fork
-cask 'dropbox'
-cask 'google-chrome'
-cask 'hammerspoon'
-cask 'intellij-idea'
-cask 'iterm2'
-
-cask 'java'
-cask 'karabiner-elements'
-cask 'paintbrush'
-cask 'pgadmin4'
-cask 'postman'
-cask 'slack'
-cask 'spotify'
-cask 'visual-studio-code'
 
 ## From fork
 # mas 'Amphetamine', id: 937984704
